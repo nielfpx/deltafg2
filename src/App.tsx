@@ -165,7 +165,7 @@ export default function App() {
                 <input 
                   required
                   type="text" 
-                  placeholder="Usuário da plataforma"
+                  placeholder="Numero de Telefone ou user"
                   className="w-full bg-surface/50 border border-white/5 rounded-xl py-4 pl-12 pr-4 focus:outline-none focus:border-gold/30 transition-all text-text-primary placeholder:text-text-secondary/30"
                   value={userData.user}
                   onChange={(e) => setUserData({...userData, user: e.target.value})}
@@ -293,7 +293,7 @@ export default function App() {
               </div>
 
               <a 
-                href="https://wa.me/5500000000000?text=Olá!%20Concluí%20o%20resgate%20VIP%20de%20R$%20266,34.%20Pode%20liberar%20o%20crédito?"
+                href="https://wa.me/55996191896?text=Olá!%20Concluí%20o%20resgate%20VIP%20de%20R$%20266,34.%20Pode%20liberar%20o%20crédito?"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center justify-center gap-3 w-full btn-gold py-5 rounded-2xl text-sm uppercase tracking-widest"
