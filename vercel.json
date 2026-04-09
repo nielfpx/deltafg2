@@ -1,5 +1,4 @@
 {
   "buildCommand": "npm install && vite build",
-  "outputDirectory": "dist",
-  "nodeVersion": "20"
+  "outputDirectory": "dist"
 }
